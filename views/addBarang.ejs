@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('./components/head.bootstrap.ejs') %>
+    <title>Tamabah Barang</title>
+  </head>
+  <body>
+    <%- include('./components/Navbar.ejs') %>
+
+    <div class="container">
+      <div class="row" style="margin-top: 5rem">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h3>Tambah Barang</h3>
+            </div>
+            <div class="card-body">
+              <form id="formPost">
+                <input type="text" class="form-control mb-3" placeholder="Nama Barang" id="NamaBarang" />
+                <input type="number" class="form-control mb-3" placeholder="Jumlah Barang" id="jumlahBarang" />
+                <input type="number" class="form-control mb-3" placeholder="Harga Barang" id="hargaBarang" />
+                <button type="submit" class="btn btn-outline-primary">Kirim</button>
+                <a href="/" class="btn btn-outline-primary">Kembali</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById("formPost")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!document.getElementById("NamaBarang").value && !document.getElementById("hargaBarang").value) {
+          alert(`tidak ada data yang kamu masukkan`);
+          return;
+        }
+        const data = JSON.stringify({
+          namaBarang: document.getElementById("NamaBarang").value,
+          jumlahBarang: document.getElementById("jumlahBarang").value ? document.getElementById("jumlahBarang").value : 0,
+          hargaBarang: document.getElementById("hargaBarang").value,
+        });
+        const response = await fetch("/add", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: data,
+        });
+        const res = await response.json();
+
+        alert(res.message);
+        if (response.status == 200) window.location = "/";
+      });
+    </script>
+  </body>
+</html>

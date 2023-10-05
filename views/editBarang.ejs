@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('./components/head.bootstrap.ejs') %>
+    <title>Edit Barang</title>
+  </head>
+  <body>
+    <%- include('./components/Navbar.ejs') %>
+
+    <div class="container">
+      <div class="row" style="margin-top: 5rem">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h3>Edit Barang</h3>
+            </div>
+            <div class="card-body">
+              <form id="formPut">
+                <input type="text" class="form-control mb-3" placeholder="Nama Barang" id="NamaBarang" value="<%= data.namaBarang %>" />
+                <input type="number" class="form-control mb-3" placeholder="Jumlah Barang" id="jumlahBarang" value="<%= data.jumlahBarang %>" />
+                <input type="number" class="form-control mb-3" placeholder="Harga Barang" id="hargaBarang" value="<%= data.hargaBarang  %>" />
+                <button type="submit" class="btn btn-outline-primary">Kirim</button>
+                <a href="/" class="btn btn-outline-primary">Kembali</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById("formPut").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!document.getElementById("NamaBarang").value && !document.getElementById("hargaBarang").value) {
+          alert(`Coba cek nama barang atau harga barang`);
+          return;
+        }
+        let setAlert = "";
+        const falidation = {
+          namaBarang: document.getElementById("NamaBarang").value != "<%= data.namaBarang %>",
+          jumlahBarang: document.getElementById("jumlahBarang").value != "<%= data.jumlahBarang %>",
+          hargaBarang: document.getElementById("hargaBarang").value != "<%= data.hargaBarang %>",
+        };
+        const data = JSON.stringify({
+          namaBarang: document.getElementById("NamaBarang").value,
+          jumlahBarang: document.getElementById("jumlahBarang").value ? document.getElementById("jumlahBarang").value : 0,
+          hargaBarang: document.getElementById("hargaBarang").value,
+        });
+
+        if (falidation.jumlahBarang) setAlert += "jumlah ";
+        if (falidation.namaBarang) setAlert += "nama ";
+        if (falidation.hargaBarang) setAlert += "harga ";
+
+        if (falidation.namaBarang || falidation.jumlahBarang || falidation.hargaBarang) {
+          await fetch("/edit/<%= data.id %>", {
+            method: "PUT",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: data,
+          });
+          alert(`${setAlert}data berhasil di rubah`);
+          window.location = "/";
+        } else alert("tidak ada yang di rubah");
+      });
+    </script>
+  </body>
+</html>
